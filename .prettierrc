@@ -1,0 +1,16 @@
+{
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"printWidth": 100,
+	"pluginSearchDirs": ["."],
+	"overrides": [
+		{
+			"files": ["*.yml"],
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2
+			}
+		}
+	]
+}

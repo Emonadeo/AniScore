@@ -1,0 +1,100 @@
+// https://m3.material.io/styles/typography/
+
+@use 'src/styles/lib/font';
+
+// Display Large
+h1,
+.type-h1,
+.type-display-lg {
+	display: block;
+	@include font.overpass(64, 24);
+	font-weight: 900;
+	text-transform: uppercase;
+
+	&.rounded {
+		@include font.katahdin(64, 24);
+		font-weight: normal;
+		letter-spacing: -2px;
+	}
+}
+
+// Display Medium
+h2,
+.type-h2,
+.type-display-md {
+	display: block;
+	@include font.overpass(32, 16);
+
+	&.rounded {
+		@include font.katahdin(32, 24);
+		font-weight: normal;
+	}
+}
+
+// Display Small
+h3,
+.type-h3,
+.type-display-sm {
+	// TODO
+}
+
+// Headline Large
+h4,
+.type-h4,
+.type-headline-lg {
+	// TODO
+}
+
+// Headline Medium
+// {}
+
+// Headline Small
+// {}
+
+// Title Large
+h5,
+.type-h5,
+.type-title-lg {
+	// TODO
+}
+
+// Title Medium
+h6,
+.type-h6,
+.type-title-md {
+	// TODO
+}
+
+// Title Small
+// {}
+
+// Label Large
+.type-label-lg {
+	display: block;
+	@include font.overpass(12, 8);
+	font-weight: 500;
+}
+
+// Label Medium
+// {}
+
+// Label Small
+// {}
+
+// Body Large
+p,
+.type-body-lg {
+	display: block;
+	@include font.overpass(12, 12);
+	font-weight: 500;
+
+	&.mono {
+		@include font.overpass(12, 12);
+	}
+}
+
+// Body Medium
+// {}
+
+// Body Small
+// {}

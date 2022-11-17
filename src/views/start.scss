@@ -1,0 +1,26 @@
+@use 'src/styles/color.scss';
+
+form {
+	height: 100%;
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	gap: 1.5rem;
+
+	.disclaimer {
+		color: rgba(color.$on-background, 0.41);
+	}
+
+	.title {
+		display: flex;
+
+		.primary {
+			margin-left: 2px;
+			color: color.$primary;
+		}
+	}
+
+	button {
+		justify-self: end;
+	}
+}

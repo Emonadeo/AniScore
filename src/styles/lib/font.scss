@@ -1,0 +1,29 @@
+@use 'src/styles/lib/capsize';
+
+@mixin overpass($cap-height, $line-gap) {
+	font-family: 'Overpass', sans-serif;
+	@include capsize.capsize(
+		(
+			'capHeight': 1400,
+			'ascent': 1750,
+			'descent': -750,
+			'unitsPerEm': 2000,
+		),
+		$cap-height,
+		$line-gap
+	);
+}
+
+@mixin katahdin($cap-height, $line-gap) {
+	font-family: 'Katahdin Round', sans-serif;
+	@include capsize.capsize(
+		(
+			'capHeight': 740,
+			'ascent': 950,
+			'descent': -250,
+			'unitsPerEm': 1000,
+		),
+		$cap-height,
+		$line-gap
+	);
+}
