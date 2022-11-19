@@ -5,8 +5,6 @@ import { MediaFormat, MediaListStatus, MediaSeason } from 'src/generated/graphql
 import { Start } from './views/Start';
 import { Play } from './views/Play';
 
-import styles from './App.module.scss';
-
 export interface Anime {
 	status: MediaListStatus;
 	progress: number;

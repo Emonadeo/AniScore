@@ -1,4 +1,13 @@
-import { batch, Component, createMemo, createSignal, For, onMount, Show } from 'solid-js';
+import {
+	batch,
+	Component,
+	createEffect,
+	createMemo,
+	createSignal,
+	For,
+	onMount,
+	Show,
+} from 'solid-js';
 
 import { Anime as A } from 'src/App';
 import { Anime } from 'src/components/Anime';
@@ -9,15 +18,30 @@ interface Props {
 	source: A[];
 }
 
+interface Tree {
+	// anime: A;
+	index: number;
+	above?: Tree;
+	below?: Tree;
+}
+
+function createTree(partialList: A[], offset = 0): Tree | undefined {
+	if (partialList.length === 0) return undefined;
+	const center = Math.trunc(partialList.length / 2);
+	return {
+		index: offset + center,
+		above: createTree(partialList.slice(0, center), offset),
+		below: createTree(partialList.slice(center + 1), offset + center + 1),
+	};
+}
+
 export const Play: Component<Props> = function (props) {
 	const [list, setList] = createSignal<A[]>([]);
 
 	// Bin Search and Insert
-	const [steps, setSteps] = createSignal<number>(0);
-	const [challengerIndex, setChallengerIndex] = createSignal<number>(0);
-	const maxSteps = createMemo<number>(() => Math.floor(Math.log2(list().length)) + 1);
+	const [tree, setTree] = createSignal<Tree | undefined>(undefined);
 
-	const challenger = createMemo<A>(() => list()[challengerIndex()] || props.source[0]);
+	const challenger = createMemo<A>(() => list().at(tree()?.index || 0) || props.source[0]);
 	const challengee = createMemo<A>(() => props.source[list().length]);
 
 	const done = createMemo<boolean>(() => list().length === props.source.length);
@@ -26,45 +50,29 @@ export const Play: Component<Props> = function (props) {
 		// Initialize list
 		batch(() => {
 			setList([props.source[0]]);
-			setChallengerIndex(Math.floor(list().length / 2));
+			setTree(createTree(list()));
 		});
 	});
 
-	function commit(up: boolean) {
-		const anime = props.source[list().length];
-		const pos = challengerIndex() + (up ? 0 : 1);
-		console.log(`Challenger Index: ${challengerIndex()}`);
-		console.log(`Inserting ${anime.media.title.romaji} into index ${pos}`);
+	function commit(above: boolean) {
+		const t = tree();
+		if (!t) {
+			console.error('Tree is undefined. This should never happen!');
+			return;
+		}
+		const next = above ? t.above : t.below;
+		if (next) {
+			setTree(next);
+			return;
+		}
 		const l = list().slice();
+		let pos = t.index;
+		if (!above) pos += 1;
 		l.splice(pos, 0, challengee());
-		console.log(`Resetting Challenger Index: ${Math.floor(list().length / 2)}`);
 		batch(() => {
 			setList(l);
-			setSteps(0);
-			setChallengerIndex(Math.floor(list().length / 2));
+			setTree(createTree(list()));
 		});
-	}
-
-	function pushStep(up: boolean) {
-		setSteps(steps() + 1);
-
-		if (steps() >= maxSteps()) {
-			commit(up);
-			return;
-		}
-
-		let diff = Math.max(Math.floor(list().length / Math.pow(2, steps() + 1)), 1);
-		if (up) diff *= -1;
-		console.log(`Diff: ${diff}`);
-		const nci = challengerIndex() + diff;
-		console.log(`New Challenger: ${list()[nci]?.media.title.romaji} (${nci})`);
-		if (nci < 0 || nci >= list().length) {
-			console.log(`New Challenger out of bounds. Skipping.`);
-			commit(up);
-			return;
-		}
-		setChallengerIndex(nci);
-		return;
 	}
 
 	return (
@@ -74,9 +82,9 @@ export const Play: Component<Props> = function (props) {
 				fallback={
 					<>
 						<div class="current-duel">
-							<Anime anime={challenger()} onClick={() => pushStep(false)} />
+							<Anime anime={challenger()} onClick={() => commit(false)} />
 							<div class="vs">vs</div>
-							<Anime anime={challengee()} onClick={() => pushStep(true)} />
+							<Anime anime={challengee()} onClick={() => commit(true)} />
 						</div>
 					</>
 				}
@@ -85,17 +93,6 @@ export const Play: Component<Props> = function (props) {
 					<p>Done.</p>
 				</div>
 			</Show>
-			<div class="debug">
-				<ol role="list">
-					<For each={list()}>
-						{(a) => (
-							<li>
-								<p>{a.media.title.romaji}</p>
-							</li>
-						)}
-					</For>
-				</ol>
-			</div>
 		</div>
 	);
 };
