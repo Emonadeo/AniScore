@@ -90,7 +90,7 @@ interface Props {
 
 export const Start: Component<Props> = function (props) {
 	return (
-		<form onSubmit={(e) => onSubmit(e, props.onStart)}>
+		<form class="view-start" onSubmit={(e) => onSubmit(e, props.onStart)}>
 			<p class="disclaimer">Not affiliated with AniList</p>
 			<div class="title">
 				<h1 class="type-h1">Ani</h1>

@@ -3,18 +3,14 @@
 .view-play {
 	height: 100%;
 	display: grid;
-	// TODO: Layout
-	grid-template-rows: 1fr;
+	grid-template-columns: 18rem max-content 18rem;
+	grid-template-rows: max-content max-content;
+	gap: 3rem;
+	justify-content: center;
+	align-content: center;
 
-	.current-duel {
-		display: grid;
-		grid-template-columns: 18rem max-content 18rem;
-		gap: 3rem;
-		justify-content: center;
-		align-content: center;
-	}
-
-	.debug {
-		padding: 1rem;
+	progress {
+		grid-column: 1 / span 3;
+		width: 100%;
 	}
 }

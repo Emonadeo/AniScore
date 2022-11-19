@@ -1,0 +1,48 @@
+@use 'src/styles/color';
+
+.view-export {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: max-content;
+	gap: 3rem;
+	padding: 6rem;
+
+	table {
+		background-color: color.$on-surface;
+		border-collapse: collapse;
+		border-radius: 4px;
+
+		tr {
+			th,
+			td {
+				height: 42px;
+				border: 2px solid color.$background;
+				padding-inline: 1rem;
+
+				&:first-child {
+					border-left: none;
+				}
+
+				&:last-child {
+					border-right: none;
+				}
+
+				&.rank {
+					text-align: right;
+				}
+
+				&.title {
+					width: 100%;
+				}
+			}
+
+			&:first-child th {
+				border-top: none;
+			}
+
+			&:last-child td {
+				border-bottom: none;
+			}
+		}
+	}
+}
