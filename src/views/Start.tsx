@@ -1,5 +1,6 @@
 import { Component } from 'solid-js';
-import { ListQuery, ListQueryVariables } from 'generated/graphql';
+import { Anime } from 'src/App';
+import { ListQuery, ListQueryVariables } from 'src/generated/graphql';
 
 import './start.scss';
 
@@ -40,7 +41,7 @@ const query = /* GraphQL */ `
 	}
 `;
 
-async function onSubmit(e: SubmitEvent) {
+async function onSubmit(e: SubmitEvent, onStart: (list: Anime[]) => void) {
 	e.preventDefault();
 	if (!e.target) return;
 	const form = e.target as HTMLFormElement;
@@ -70,7 +71,7 @@ async function onSubmit(e: SubmitEvent) {
 		return;
 	}
 	const list = qryRes.MediaListCollection?.lists
-		?.filter((l) => l && !l?.isCustomList) // Don't include custom lists
+		?.filter((l) => l && !l.isCustomList) // Don't include custom lists
 		.map((l) => l?.entries) // Project entries
 		.flat(); // Merge sublists into a single big list
 
@@ -80,12 +81,16 @@ async function onSubmit(e: SubmitEvent) {
 		return;
 	}
 
-	console.log(list);
+	onStart(list as Anime[]);
 }
 
-export const Start: Component = function () {
+interface Props {
+	onStart: (list: Anime[]) => void;
+}
+
+export const Start: Component<Props> = function (props) {
 	return (
-		<form onSubmit={onSubmit}>
+		<form onSubmit={(e) => onSubmit(e, props.onStart)}>
 			<p class="disclaimer">Not affiliated with AniList</p>
 			<div class="title">
 				<h1 class="type-h1">Ani</h1>
@@ -93,7 +98,7 @@ export const Start: Component = function () {
 			</div>
 			<p>Generate AniList Scores by playing "Would you rather?"</p>
 			<input class="type-label-lg" name="username" type="text" placeholder="Username" required />
-			<button class="type-label-lg">Go!</button>
+			<button class="type-label-lg primary">Go!</button>
 		</form>
 	);
 };

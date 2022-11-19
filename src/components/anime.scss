@@ -1,0 +1,56 @@
+@use 'src/styles/color';
+
+.anime {
+	background-color: color.$surface;
+	color: color.$on-surface;
+	border-radius: 0.5rem;
+	overflow: hidden;
+	box-shadow: 0 0 1rem 0 rgba(black, 0.5);
+
+	transition-property: transform, box-shadow;
+	transition-timing-function: ease-in-out;
+	transition-duration: 100ms;
+
+	&:hover {
+		transform: scale(1.05);
+		box-shadow: 0 0 3rem -1.5rem black;
+	}
+
+	figure {
+		display: grid;
+		width: 100%;
+
+		.cover {
+			grid-area: 1 / 1;
+			width: 100%;
+			aspect-ratio: 2/ 3;
+			object-fit: cover;
+		}
+
+		.caption {
+			grid-area: 1 / 1;
+			padding: 1rem;
+			background-color: rgba(color.$background, 0.7);
+			color: color.$on-background;
+			align-self: end;
+		}
+
+		ul.stats {
+			display: flex;
+			justify-content: space-between;
+			gap: 1rem;
+			padding: 1rem;
+			background-color: color.$on-surface;
+			color: color.$surface;
+
+			li {
+				display: flex;
+				gap: 0.25rem;
+
+				.eps {
+					color: color.$primary;
+				}
+			}
+		}
+	}
+}

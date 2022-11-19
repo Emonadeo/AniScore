@@ -1,0 +1,20 @@
+@use 'src/styles/color';
+
+.view-play {
+	height: 100%;
+	display: grid;
+	// TODO: Layout
+	grid-template-rows: 1fr;
+
+	.current-duel {
+		display: grid;
+		grid-template-columns: 18rem max-content 18rem;
+		gap: 3rem;
+		justify-content: center;
+		align-content: center;
+	}
+
+	.debug {
+		padding: 1rem;
+	}
+}
