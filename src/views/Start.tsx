@@ -1,6 +1,6 @@
 import { Component } from 'solid-js';
-import { Anime } from 'src/App';
 import { ListQuery, ListQueryVariables } from 'src/generated/graphql';
+import { Anime } from 'src/util/anime';
 
 import './start.scss';
 

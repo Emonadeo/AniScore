@@ -1,65 +1,41 @@
-import {
-	batch,
-	Component,
-	createEffect,
-	createMemo,
-	createSignal,
-	For,
-	onMount,
-	Show,
-} from 'solid-js';
+import { batch, Component, createMemo, createSignal, onMount, Show } from 'solid-js';
 
-import { Anime as A } from 'src/App';
-import { Anime } from 'src/components/Anime';
+import { Anime } from 'src/util/anime';
+import { createTree, Tree } from 'src/util/tree';
+import { Anime as AnimeComponent } from 'src/components/Anime';
 
 import './play.scss';
 
 interface Props {
-	source: A[];
-}
-
-interface Tree {
-	// anime: A;
-	index: number;
-	above?: Tree;
-	below?: Tree;
-}
-
-function createTree(partialList: A[], offset = 0): Tree | undefined {
-	if (partialList.length === 0) return undefined;
-	const center = Math.trunc(partialList.length / 2);
-	return {
-		index: offset + center,
-		above: createTree(partialList.slice(0, center), offset),
-		below: createTree(partialList.slice(center + 1), offset + center + 1),
-	};
+	source: Anime[];
 }
 
 export const Play: Component<Props> = function (props) {
-	const [list, setList] = createSignal<A[]>([]);
+	const [list, setList] = createSignal<Anime[]>([]);
 
 	// Bin Search and Insert
-	const [tree, setTree] = createSignal<Tree | undefined>(undefined);
+	const [tree, setTree] = createSignal<Tree>({ index: 0 });
 
-	const challenger = createMemo<A>(() => list().at(tree()?.index || 0) || props.source[0]);
-	const challengee = createMemo<A>(() => props.source[list().length]);
+	const challenger = createMemo<Anime>(() => list().at(tree()?.index || 0) || props.source[0]);
+	const challengee = createMemo<Anime>(() => props.source[list().length]);
 
 	const done = createMemo<boolean>(() => list().length === props.source.length);
 
 	onMount(() => {
-		// Initialize list
+		if (props.source.length === 0) {
+			console.error('List is empty.');
+			return;
+		}
+		const initialList = [props.source[0]];
+		// Initialize
 		batch(() => {
-			setList([props.source[0]]);
-			setTree(createTree(list()));
+			setList(initialList);
+			setTree(createTree(list()) as Tree); // TODO: null safety
 		});
 	});
 
 	function commit(above: boolean) {
 		const t = tree();
-		if (!t) {
-			console.error('Tree is undefined. This should never happen!');
-			return;
-		}
 		const next = above ? t.above : t.below;
 		if (next) {
 			setTree(next);
@@ -71,7 +47,7 @@ export const Play: Component<Props> = function (props) {
 		l.splice(pos, 0, challengee());
 		batch(() => {
 			setList(l);
-			setTree(createTree(list()));
+			setTree(createTree(list()) as Tree); // TODO: null safety
 		});
 	}
 
@@ -82,9 +58,9 @@ export const Play: Component<Props> = function (props) {
 				fallback={
 					<>
 						<div class="current-duel">
-							<Anime anime={challenger()} onClick={() => commit(false)} />
+							<AnimeComponent anime={challenger()} onClick={() => commit(false)} />
 							<div class="vs">vs</div>
-							<Anime anime={challengee()} onClick={() => commit(true)} />
+							<AnimeComponent anime={challengee()} onClick={() => commit(true)} />
 						</div>
 					</>
 				}

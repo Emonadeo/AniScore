@@ -1,11 +1,11 @@
 import { Component, Show } from 'solid-js';
-import { Anime as A } from 'src/App';
 import { MediaFormat } from 'src/generated/graphql';
+import { Anime as IAnime } from 'src/util/anime';
 
 import './anime.scss';
 
 interface Props {
-	anime: A;
+	anime: IAnime;
 	onClick?: () => void;
 }
 

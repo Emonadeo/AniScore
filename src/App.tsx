@@ -1,34 +1,13 @@
 import { Component, createSignal, Show } from 'solid-js';
 
-import { MediaFormat, MediaListStatus, MediaSeason } from 'src/generated/graphql';
-
 import { Start } from './views/Start';
 import { Play } from './views/Play';
-
-export interface Anime {
-	status: MediaListStatus;
-	progress: number;
-	media: {
-		title: {
-			romaji: string;
-			english?: string;
-			native: string;
-		};
-		format: MediaFormat;
-		episodes: number;
-		season: MediaSeason;
-		seasonYear: number;
-		coverImage: {
-			large: string;
-		};
-		siteUrl: string;
-	};
-}
+import { Anime } from 'src/util/anime';
 
 export const App: Component = function () {
-	const [list, setList] = createSignal<Anime[]>();
+	const [source, setSource] = createSignal<Anime[]>();
 	return (
-		<Show when={list()} fallback={<Start onStart={(l) => setList(l)} />} keyed>
+		<Show when={source()} fallback={<Start onStart={(l) => setSource(l)} />} keyed>
 			{(l) => <Play source={l} />}
 		</Show>
 	);
