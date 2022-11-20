@@ -2,6 +2,7 @@ import './play.scss';
 
 import { batch, Component, createMemo, createSignal, onMount } from 'solid-js';
 import { Anime as AnimeComponent } from 'src/components/Anime';
+import { Keybinds } from 'src/components/Keybinds';
 import { Anime } from 'src/util/anime';
 import { createTree, Tree } from 'src/util/tree';
 
@@ -86,6 +87,14 @@ export const Play: Component<Props> = function (props) {
 		setLocalProgress(0);
 	}
 
+	function onLeft() {
+		commit(false);
+	}
+
+	function onRight() {
+		commit(true);
+	}
+
 	return (
 		<div class="view-play">
 			<div class="progress">
@@ -94,8 +103,11 @@ export const Play: Component<Props> = function (props) {
 				</label>
 				<progress id="bar" max={maxProgress()} value={progress()} />
 			</div>
-			<AnimeComponent anime={challenger()} onClick={() => commit(false)} />
-			<AnimeComponent anime={challengee()} onClick={() => commit(true)} />
+			<div class="duel">
+				<AnimeComponent anime={challenger()} onClick={onLeft} />
+				<AnimeComponent anime={challengee()} onClick={onRight} />
+				<Keybinds keybinds={{ j: onLeft, k: onRight }} />
+			</div>
 		</div>
 	);
 };
