@@ -1,6 +1,7 @@
 import './play.scss';
 
 import { batch, Component, createMemo, createSignal, onMount } from 'solid-js';
+import { Transition } from 'solid-transition-group';
 import { Anime as AnimeComponent } from 'src/components/Anime';
 import { Keybinds } from 'src/components/Keybinds';
 import { Anime } from 'src/util/anime';
@@ -27,8 +28,11 @@ export const Play: Component<Props> = function (props) {
 	const [localProgress, setLocalProgress] = createSignal<number>(0);
 	const maxLocalProgress = createMemo<number>(() => Math.ceil(Math.log2(list().length)));
 
-	const challenger = createMemo<Anime>(() => list().at(tree().index || 0) || props.source[0]);
-	const challengee = createMemo<Anime>(() => props.source[list().length] || props.source[0]);
+	const challenger = () => list().at(tree().index || 0) || props.source[0];
+	const challengee = () => {
+		tree(); // Refresh when tree changes to trigger animation
+		return { ...(props.source[list().length] || props.source[0]) };
+	};
 
 	onMount(() => {
 		if (props.source.length === 0) {
@@ -104,8 +108,12 @@ export const Play: Component<Props> = function (props) {
 				<progress id="bar" max={maxProgress()} value={progress()} />
 			</div>
 			<div class="duel">
-				<AnimeComponent anime={challenger()} onClick={onLeft} />
-				<AnimeComponent anime={challengee()} onClick={onRight} />
+				<Transition name="swap">
+					<AnimeComponent class="left" anime={challenger()} onClick={onLeft} />
+				</Transition>
+				<Transition name="swap">
+					<AnimeComponent class="right" anime={challengee()} onClick={onRight} />
+				</Transition>
 				<Keybinds keybinds={{ j: onLeft, k: onRight }} />
 			</div>
 		</div>

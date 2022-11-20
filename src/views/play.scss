@@ -19,8 +19,29 @@
 		grid-auto-rows: max-content;
 		gap: 1.5rem 3rem;
 
+		.swap-enter-active,
+		.swap-exit-active {
+			transition: transform 500ms ease;
+		}
+
+		.anime.right.swap-enter,
+		.anime.right.swap-exit-to {
+			transform: translateX(calc(50vw + 6rem)) rotate(30deg);
+		}
+
+		.anime.left.swap-enter,
+		.anime.left.swap-exit-to {
+			transform: translateX(calc(-50vw - 6rem)) rotate(-30deg);
+		}
+
 		kbd {
 			justify-self: center;
 		}
+	}
+}
+
+@keyframes swap {
+	to {
+		transform: translateX(calc(50vw + 6rem)) rotate(30deg);
 	}
 }
