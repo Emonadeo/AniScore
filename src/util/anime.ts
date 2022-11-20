@@ -1,6 +1,7 @@
 import { MediaFormat, MediaListStatus, MediaSeason } from 'src/generated/graphql';
 
 export interface Anime {
+	id: number;
 	status: MediaListStatus;
 	progress: number;
 	media: {

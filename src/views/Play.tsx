@@ -1,10 +1,9 @@
-import { batch, Component, createMemo, createSignal, onMount, Show } from 'solid-js';
+import './play.scss';
 
+import { batch, Component, createMemo, createSignal, onMount } from 'solid-js';
+import { Anime as AnimeComponent } from 'src/components/Anime';
 import { Anime } from 'src/util/anime';
 import { createTree, Tree } from 'src/util/tree';
-import { Anime as AnimeComponent } from 'src/components/Anime';
-
-import './play.scss';
 
 interface Props {
 	source: Anime[];
@@ -89,7 +88,7 @@ export const Play: Component<Props> = function (props) {
 
 	return (
 		<div class="view-play">
-			<label for="progress">
+			<label for="progress" class="type-label-lg">
 				{progress()} / {maxProgress()}
 			</label>
 			<progress id="progress" max={maxProgress()} value={progress()} />
