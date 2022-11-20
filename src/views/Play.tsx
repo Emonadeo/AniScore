@@ -42,12 +42,12 @@ export const Play: Component<Props> = function (props) {
 		});
 
 		// TODO: Remove DEBUG
-		const test = setInterval(() => {
-			commit(false);
-			if (list().length === props.source.length) {
-				clearInterval(test);
-			}
-		}, 1);
+		// const test = setInterval(() => {
+		// 	commit(false);
+		// 	if (list().length === props.source.length) {
+		// 		clearInterval(test);
+		// 	}
+		// }, 1);
 	});
 
 	function commit(above: boolean) {
@@ -88,12 +88,13 @@ export const Play: Component<Props> = function (props) {
 
 	return (
 		<div class="view-play">
-			<label for="progress" class="type-label-lg">
-				{progress()} / {maxProgress()}
-			</label>
-			<progress id="progress" max={maxProgress()} value={progress()} />
+			<div class="progress">
+				<label for="bar" class="type-label-lg">
+					{progress()} / {maxProgress()}
+				</label>
+				<progress id="bar" max={maxProgress()} value={progress()} />
+			</div>
 			<AnimeComponent anime={challenger()} onClick={() => commit(false)} />
-			<div class="vs">vs</div>
 			<AnimeComponent anime={challengee()} onClick={() => commit(true)} />
 		</div>
 	);

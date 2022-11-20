@@ -3,9 +3,21 @@
 .view-export {
 	display: grid;
 	grid-template-columns: 1fr;
-	grid-template-rows: max-content;
+	grid-auto-rows: max-content;
 	gap: 3rem;
 	padding: 6rem;
+
+	.progress {
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-auto-rows: max-content;
+		gap: 1rem;
+
+		.message {
+			display: flex;
+			gap: 1rem;
+		}
+	}
 
 	table {
 		background-color: color.$on-surface;

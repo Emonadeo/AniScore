@@ -1,6 +1,7 @@
 import './export.scss';
 
-import { Component, For } from 'solid-js';
+import { Component, createSignal, For, Show } from 'solid-js';
+import { Spinner } from 'src/components/Spinner';
 import { ExportMutationVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';
 
@@ -21,22 +22,28 @@ const query = /* GraphQL */ `
 `;
 
 const defaultRetry = 60;
-async function retryAfter(res?: Response): Promise<void> {
-	const retryAfter = Number(res ? res.headers.get('retry-after') || defaultRetry : defaultRetry);
-	console.warn(`Rate Limit reached. Continuing in ${retryAfter} seconds.`);
-	await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
-}
 
 export const Export: Component<Props> = function (props) {
+	const [progress, setProgress] = createSignal<number>();
+	const [progressMsg, setProgressMsg] = createSignal<string>();
+
 	function calcScore(i: number): number {
 		return Math.trunc((1 - i / props.list.length) * (maxScore - minScore) + minScore);
 	}
 
+	async function retryAfter(res?: Response): Promise<void> {
+		const retryAfter = Number(res ? res.headers.get('retry-after') || defaultRetry : defaultRetry);
+		setProgressMsg(`Rate Limit reached. Continuing in ${retryAfter} seconds.`);
+		await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+	}
+
 	async function onExport() {
 		console.log('Exporting. This may take a few minutes due to rate limiting.');
+		setProgress(0);
 		const stack: Array<[number, Anime]> = props.list.map((a, i) => [i, a]);
 		while (stack.length > 0) {
 			const [i, anime] = stack.shift() as [number, Anime];
+			setProgressMsg(`Exporting ${anime.media.title.romaji}`);
 			const variables: ExportMutationVariables = {
 				id: anime.id,
 				score: calcScore(i),
@@ -76,14 +83,18 @@ export const Export: Component<Props> = function (props) {
 				return;
 			}
 
+			if (!res.ok) {
+				console.error(`Failed to update scores for ${anime.media.title.romaji}`);
+			} else {
+				console.log(`Successfully updated scores for ${anime.media.title.romaji}`);
+			}
+
+			setProgress((p) => (p || 0) + 1);
+
 			// Handle rate limiting preflight next request
 			const ratelimitRemaining = res.headers.get('x-ratelimit-remaining');
 			if (stack.length > 0 && ratelimitRemaining !== null && ratelimitRemaining === '0') {
 				await retryAfter(res);
-			}
-
-			if (!res.ok) {
-				console.error(`Failed to update scores for ${anime.media.title.romaji}`);
 			}
 		}
 		console.log('Export completed');
@@ -91,9 +102,22 @@ export const Export: Component<Props> = function (props) {
 
 	return (
 		<div class="view-export">
-			<button class="primary type-label-lg" onClick={onExport}>
-				Export
-			</button>
+			<Show
+				when={progress() !== undefined}
+				fallback={
+					<button class="primary type-label-lg" onClick={onExport}>
+						Export
+					</button>
+				}
+			>
+				<div class="progress">
+					<div class="message">
+						<Spinner />
+						<p>{progressMsg()}</p>
+					</div>
+					<progress class="bar" max={props.list.length} value={progress() || 0} />
+				</div>
+			</Show>
 			<table role="list" class="list">
 				<thead>
 					<tr>
