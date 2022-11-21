@@ -22,10 +22,6 @@ const animate: ResourceFetcher<IAnime, IAnime> = async function (anime, { value 
 export const Anime: Component<Props> = function (props) {
 	const [anime] = createResource(() => props.anime, animate);
 
-	createEffect(() => {
-		console.log(anime.state);
-	});
-
 	return (
 		<Show when={anime.state == 'ready'}>
 			<button class={`anime ${props.class}`} onClick={() => props.onClick && props.onClick()}>

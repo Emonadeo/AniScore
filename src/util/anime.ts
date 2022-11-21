@@ -1,3 +1,7 @@
+/**
+ * @file Types and helper functions related to Anime
+ */
+
 import { MediaFormat, MediaListStatus, MediaSeason } from 'src/generated/graphql';
 
 export interface Anime {

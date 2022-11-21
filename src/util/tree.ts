@@ -1,3 +1,7 @@
+/**
+ * @file Data structures for indexed binary trees
+ */
+
 export interface Tree {
 	/**
 	 * Original index of of the list element

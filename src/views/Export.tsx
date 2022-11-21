@@ -4,10 +4,11 @@ import { Component, createSignal, For, Show } from 'solid-js';
 import { Spinner } from 'src/components/Spinner';
 import { ExportMutationVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';
+import { Token } from 'src/util/token';
 
 interface Props {
-	list: Anime[];
-	accessToken: string;
+	output: Anime[];
+	token: Token;
 }
 
 const minScore = 0;
@@ -28,7 +29,7 @@ export const Export: Component<Props> = function (props) {
 	const [progressMsg, setProgressMsg] = createSignal<string>();
 
 	function calcScore(i: number): number {
-		return Math.trunc((1 - i / props.list.length) * (maxScore - minScore) + minScore);
+		return Math.trunc((1 - i / props.output.length) * (maxScore - minScore) + minScore);
 	}
 
 	async function retryAfter(res?: Response): Promise<void> {
@@ -40,7 +41,7 @@ export const Export: Component<Props> = function (props) {
 	async function onExport() {
 		console.log('Exporting. This may take a few minutes due to rate limiting.');
 		setProgress(0);
-		const stack: Array<[number, Anime]> = props.list.map((a, i) => [i, a]);
+		const stack: Array<[number, Anime]> = props.output.map((a, i) => [i, a]);
 		while (stack.length > 0) {
 			const [i, anime] = stack.shift() as [number, Anime];
 			setProgressMsg(`Exporting ${anime.media.title.romaji}`);
@@ -115,7 +116,7 @@ export const Export: Component<Props> = function (props) {
 						<Spinner />
 						<p>{progressMsg()}</p>
 					</div>
-					<progress class="bar" max={props.list.length} value={progress() || 0} />
+					<progress class="bar" max={props.output.length} value={progress() || 0} />
 				</div>
 			</Show>
 			<table role="list" class="list">
@@ -133,7 +134,7 @@ export const Export: Component<Props> = function (props) {
 					</tr>
 				</thead>
 				<tbody>
-					<For each={props.list}>
+					<For each={props.output}>
 						{(anime, i) => (
 							<tr>
 								<td class="score">
