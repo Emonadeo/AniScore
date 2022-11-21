@@ -7,6 +7,11 @@
 	gap: 3rem;
 	padding: 6rem;
 
+	.actions {
+		display: flex;
+		gap: 1.5rem;
+	}
+
 	.progress {
 		display: grid;
 		grid-template-columns: 1fr;

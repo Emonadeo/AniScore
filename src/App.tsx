@@ -6,11 +6,11 @@ import { loadTokenFromUrl, Token } from 'src/util/token';
 import { Export } from 'src/views/Export';
 
 import { Play } from './views/Play';
-import { Start, StartToken } from './views/Start';
+import { Load, Start } from './views/Start';
 
 export const App: Component = function () {
 	const [game, setGame] = createSignal<Game | undefined>(loadGame());
-	const [token] = createSignal<Token | undefined>(loadTokenFromUrl());
+	const [token, setToken] = createSignal<Token | undefined>(loadTokenFromUrl());
 	const [output, setOutput] = createSignal<Anime[] | undefined>(loadOutput());
 
 	createEffect(() => saveOutput(output()));
@@ -23,17 +23,26 @@ export const App: Component = function () {
 		return;
 	}
 
+	function onClear() {
+		batch(() => {
+			location.hash = '';
+			setToken();
+			setOutput();
+			clearGame(setGame);
+		});
+	}
+
 	return (
 		<>
 			<Switch fallback={<Start />}>
 				<Match when={output() && token() && { o: output() as Anime[], t: token() as Token }} keyed>
-					{({ o, t }) => <Export token={t} output={o} />}
+					{({ o, t }) => <Export token={t} output={o} onClear={onClear} />}
 				</Match>
 				<Match when={game()} keyed>
-					{(game) => <Play game={game} onDone={onDone} />}
+					{(game) => <Play game={game} onDone={onDone} onClear={onClear} />}
 				</Match>
 				<Match when={token()} keyed>
-					{(token) => <StartToken token={token} setGame={setGame} />}
+					{(token) => <Load token={token} setGame={setGame} />}
 				</Match>
 			</Switch>
 		</>

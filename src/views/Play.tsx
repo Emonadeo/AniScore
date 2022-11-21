@@ -11,6 +11,7 @@ import { createTree, Tree } from 'src/util/tree';
 interface Props {
 	game: Game;
 	onDone: (list: Anime[]) => void;
+	onClear: () => void;
 }
 
 export const Play: Component<Props> = function (props) {
@@ -22,14 +23,21 @@ export const Play: Component<Props> = function (props) {
 	};
 
 	// TODO: Remove DEBUG
-	onMount(() => {
-		const test = setInterval(() => {
-			commit(false);
-			if (props.game.list().length === props.game.source().length) {
-				clearInterval(test);
-			}
-		}, 1);
-	});
+	// onMount(() => {
+	// 	const test = setInterval(() => {
+	// 		commit(false);
+	// 		if (props.game.list().length === props.game.source().length) {
+	// 			clearInterval(test);
+	// 		}
+	// 	}, 1);
+	// });
+
+	function onClear() {
+		if (!confirm('Are you sure you want to abort? This will delete all progress permanently.')) {
+			return;
+		}
+		props.onClear();
+	}
 
 	function commit(above: boolean) {
 		props.game.setProgress((p) => p + 1);
@@ -77,6 +85,11 @@ export const Play: Component<Props> = function (props) {
 
 	return (
 		<div class="view-play">
+			<div class="actions">
+				<button class="type-label-lg danger" onClick={onClear}>
+					Abort
+				</button>
+			</div>
 			<div class="progress">
 				<label for="bar" class="type-label-lg">
 					{props.game.progress()} / {props.game.maxProgress()}

@@ -59,7 +59,8 @@ button,
 	color: inherit;
 	text-align: unset;
 
-	&.primary {
+	&.primary,
+	&.danger {
 		min-width: 6rem;
 		height: 42px;
 		padding-inline: 0.75rem;
@@ -69,6 +70,11 @@ button,
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		&.danger {
+			background-color: color.$error;
+			color: color.$on-error;
+		}
 	}
 }
 

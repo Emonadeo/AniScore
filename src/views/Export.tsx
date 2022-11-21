@@ -9,6 +9,7 @@ import { Token } from 'src/util/token';
 interface Props {
 	output: Anime[];
 	token: Token;
+	onClear: () => void;
 }
 
 const minScore = 0;
@@ -38,6 +39,13 @@ export const Export: Component<Props> = function (props) {
 		await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
 	}
 
+	function onClear() {
+		if (!confirm('Are you sure you want to clear the list?')) {
+			return;
+		}
+		props.onClear();
+	}
+
 	async function onExport() {
 		console.log('Exporting. This may take a few minutes due to rate limiting.');
 		setProgress(0);
@@ -59,7 +67,7 @@ export const Export: Component<Props> = function (props) {
 						method: 'POST',
 						body: JSON.stringify({ query, variables }),
 						headers: {
-							Authorization: `Bearer ${props.accessToken}`,
+							Authorization: `Bearer ${props.token.str}`,
 							'Content-Type': 'application/json',
 						},
 					});
@@ -103,12 +111,18 @@ export const Export: Component<Props> = function (props) {
 
 	return (
 		<div class="view-export">
+			<h1 class="rounded">This is your new List.</h1>
 			<Show
 				when={progress() !== undefined}
 				fallback={
-					<button class="primary type-label-lg" onClick={onExport}>
-						Export
-					</button>
+					<div class="actions">
+						<button class="danger type-label-lg" onClick={onClear}>
+							Clear
+						</button>
+						<button class="primary type-label-lg" onClick={onExport}>
+							Export
+						</button>
+					</div>
 				}
 			>
 				<div class="progress">
