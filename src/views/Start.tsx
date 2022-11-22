@@ -88,7 +88,9 @@ const fetchSource: ResourceFetcher<Token, Anime[]> = async function (token): Pro
 			method: 'POST',
 			body: JSON.stringify({ query, variables }),
 			headers: {
-				Authorization: `Bearer ${token.str}`,
+				// TODO: Make configurable
+				// Uncomment the following line to include private Anime
+				// Authorization: `Bearer ${token.str}`,
 				'Content-Type': 'application/json',
 			},
 		});

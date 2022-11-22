@@ -16,8 +16,8 @@ export function saveSource(source: Anime[] | undefined): void {
 	saveJson<Anime[]>(keySource, source);
 }
 
-export function saveList(list: Anime[] | undefined): void {
-	saveJson<Anime[]>(keyList, list);
+export function saveList(list: Anime[][] | undefined): void {
+	saveJson<Anime[][]>(keyList, list);
 }
 
 export function saveTree(tree: Tree | undefined): void {
@@ -32,16 +32,16 @@ export function saveLocalProgress(localProgress: number | undefined): void {
 	saveJson<number>(keyLocalProgress, localProgress);
 }
 
-export function saveOutput(output: Anime[] | undefined): void {
-	saveJson<Anime[]>(keyOutput, output);
+export function saveOutput(output: Anime[][] | undefined): void {
+	saveJson<Anime[][]>(keyOutput, output);
 }
 
 export function loadSource(): Anime[] | undefined {
 	return loadJson<Anime[]>(keySource);
 }
 
-export function loadList(): Anime[] | undefined {
-	return loadJson<Anime[]>(keyList);
+export function loadList(): Anime[][] | undefined {
+	return loadJson<Anime[][]>(keyList);
 }
 
 export function loadTree(): Tree | undefined {
@@ -56,8 +56,8 @@ export function loadLocalProgress(): number | undefined {
 	return loadJson<number>(keyLocalProgress);
 }
 
-export function loadOutput(): Anime[] | undefined {
-	return loadJson<Anime[]>(keyOutput);
+export function loadOutput(): Anime[][] | undefined {
+	return loadJson<Anime[][]>(keyOutput);
 }
 
 function loadJson<T>(key: string): T | undefined {

@@ -46,10 +46,19 @@ export const Keybinds: Component<Props> = function (props) {
 		window.removeEventListener('keyup', onKeyUp);
 	});
 
+	function getLabel(key: string) {
+		switch (key) {
+			case ' ':
+				return 'Space';
+			default:
+				return key;
+		}
+	}
+
 	return (
 		<>
 			<For each={Object.keys(props.keybinds)}>
-				{(key) => <kbd classList={{ pressed: keys()[key]?.pressed() }}>{key}</kbd>}
+				{(key) => <kbd classList={{ pressed: keys()[key]?.pressed() }}>{getLabel(key)}</kbd>}
 			</For>
 		</>
 	);

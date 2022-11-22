@@ -70,6 +70,16 @@ button,
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		box-shadow: 0 0 1rem 0 rgba(black, 0.5);
+
+		transition-property: transform, box-shadow;
+		transition-timing-function: ease-in-out;
+		transition-duration: 100ms;
+
+		&:hover {
+			transform: scale(1.05);
+			box-shadow: 0 0 2rem 0 rgba(black, 0.5);
+		}
 
 		&.danger {
 			background-color: color.$error;
@@ -111,12 +121,13 @@ kbd {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 42px;
+	min-width: 42px;
 	height: 42px;
 	border-radius: 4px;
 	border: 2px solid color.$on-surface;
 	color: color.$on-surface;
 	text-transform: uppercase;
+	padding-inline: 0.75rem;
 
 	transition-property: background-color, transform;
 	transition-timing-function: ease-in-out;

@@ -11,11 +11,11 @@ import { Load, Start } from './views/Start';
 export const App: Component = function () {
 	const [game, setGame] = createSignal<Game | undefined>(loadGame());
 	const [token, setToken] = createSignal<Token | undefined>(loadTokenFromUrl());
-	const [output, setOutput] = createSignal<Anime[] | undefined>(loadOutput());
+	const [output, setOutput] = createSignal<Anime[][] | undefined>(loadOutput());
 
 	createEffect(() => saveOutput(output()));
 
-	function onDone(list: Anime[]) {
+	function onDone(list: Anime[][]) {
 		batch(() => {
 			setOutput(list);
 			clearGame(setGame);
@@ -35,7 +35,10 @@ export const App: Component = function () {
 	return (
 		<>
 			<Switch fallback={<Start />}>
-				<Match when={output() && token() && { o: output() as Anime[], t: token() as Token }} keyed>
+				<Match
+					when={output() && token() && { o: output() as Anime[][], t: token() as Token }}
+					keyed
+				>
 					{({ o, t }) => <Export token={t} output={o} setOutput={setOutput} onClear={onClear} />}
 				</Match>
 				<Match when={game()} keyed>

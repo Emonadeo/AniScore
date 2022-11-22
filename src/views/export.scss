@@ -45,6 +45,7 @@
 				}
 
 				&.move {
+					min-width: 42px;
 					padding: 0;
 
 					button {
@@ -56,11 +57,6 @@
 						align-items: center;
 						fill: color.$surface;
 
-						&:hover {
-							background-color: rgba(color.$background, 0.5);
-							fill: color.$on-background;
-						}
-
 						svg {
 							height: 6px;
 						}
@@ -71,12 +67,50 @@
 					}
 				}
 
+				&.merge {
+					padding: 0;
+
+					button {
+						width: 40px;
+						height: 40px;
+
+						img {
+							margin: 0 auto;
+						}
+					}
+				}
+
 				&.rank {
-					text-align: right;
+					padding: 0;
+
+					button {
+						// TODO: Avoid fixed dimensions
+						height: 40px;
+						width: 100%;
+
+						img {
+							margin: auto;
+						}
+					}
+
+					p {
+						flex: 1;
+						text-align: right;
+						padding-inline: 1rem;
+					}
 				}
 
 				&.title {
 					width: 100%;
+				}
+
+				button {
+					transition: background-color 100ms ease-in-out;
+
+					&:hover {
+						background-color: rgba(color.$primary, 0.5);
+						fill: color.$on-background;
+					}
 				}
 			}
 

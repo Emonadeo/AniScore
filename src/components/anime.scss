@@ -14,6 +14,7 @@
 	&:hover {
 		transform: scale(1.05);
 		box-shadow: 0 0 3rem -1.5rem black;
+		z-index: 2;
 	}
 
 	figure {

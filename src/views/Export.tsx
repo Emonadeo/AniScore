@@ -1,14 +1,17 @@
 import './export.scss';
 
-import { Component, createSignal, For, Setter, Show } from 'solid-js';
+import { Component, createSignal, For, Match, Setter, Show, Switch } from 'solid-js';
 import { Spinner } from 'src/components/Spinner';
 import { ExportMutationVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';
 import { Token } from 'src/util/token';
 
+import iconMerge from 'src/assets/merge.svg';
+import iconSplit from 'src/assets/split.svg';
+
 interface Props {
-	output: Anime[];
-	setOutput: Setter<Anime[]>; // Setter needed for moving list items
+	output: Anime[][];
+	setOutput: Setter<Anime[][]>; // Setter needed for moving list items
 	token: Token;
 	onClear: () => void;
 }
@@ -50,7 +53,10 @@ export const Export: Component<Props> = function (props) {
 	async function onExport() {
 		console.log('Exporting. This may take a few minutes due to rate limiting.');
 		setProgress(0);
-		const stack: Array<[number, Anime]> = props.output.map((a, i) => [i, a]);
+		const stack: Array<[number, Anime]> = [];
+		props.output.forEach((tiedAnimes, i) => {
+			tiedAnimes.forEach((anime) => stack.push([i, anime]));
+		});
 		while (stack.length > 0) {
 			const [i, anime] = stack.shift() as [number, Anime];
 			setProgressMsg(`Exporting ${anime.media.title.romaji}`);
@@ -115,8 +121,22 @@ export const Export: Component<Props> = function (props) {
 			return;
 		}
 		const l = props.output.slice();
-		const [anime] = l.splice(index, 1);
-		l.splice(up ? index - 1 : index + 1, 0, anime);
+		const [tiedAnimes] = l.splice(index, 1);
+		l.splice(up ? index - 1 : index + 1, 0, tiedAnimes);
+		props.setOutput(l);
+	}
+
+	function merge(tiedAnimesIndex: number) {
+		const l = props.output.slice();
+		const [[anime]] = l.splice(tiedAnimesIndex, 1);
+		l[tiedAnimesIndex - 1].push(anime);
+		props.setOutput(l);
+	}
+
+	function split(tiedAnimesIndex: number, innerIndex: number) {
+		const l = props.output.slice();
+		const tiedAnimes = l[tiedAnimesIndex].splice(innerIndex, 1);
+		l.splice(tiedAnimesIndex + 1, 0, tiedAnimes);
 		props.setOutput(l);
 	}
 
@@ -141,14 +161,14 @@ export const Export: Component<Props> = function (props) {
 						<Spinner />
 						<p>{progressMsg()}</p>
 					</div>
-					<progress class="bar" max={props.output.length} value={progress() || 0} />
+					<progress class="bar" max={props.output.flat().length} value={progress() || 0} />
 				</div>
 			</Show>
 			<table role="list" class="list">
 				<thead>
 					<tr>
 						<th />
-						<th>
+						<th colspan={2}>
 							<p class="type-title-sm">Rank</p>
 						</th>
 						<th>
@@ -161,39 +181,58 @@ export const Export: Component<Props> = function (props) {
 				</thead>
 				<tbody>
 					<For each={props.output}>
-						{(anime, i) => (
-							<tr>
-								<td class="move">
-									<button
-										onClick={() => {
-											move(i(), true);
-										}}
-									>
-										<svg viewBox="0 0 2 1">
-											<polygon fill="inherit" points="0,1 1,0 2,1" />
-										</svg>
-									</button>
-									<hr class="divider" />
-									<button
-										onClick={() => {
-											move(i(), false);
-										}}
-									>
-										<svg viewBox="0 0 2 1">
-											<polygon fill="inherit" points="0,0 1,1 2,0" />
-										</svg>
-									</button>
-								</td>
-								<td class="rank">
-									<p class="mono">{i() + 1}</p>
-								</td>
-								<td class="score">
-									<p class="mono">{calcScore(i())}</p>
-								</td>
-								<td class="title">
-									<p>{anime.media.title.romaji}</p>
-								</td>
-							</tr>
+						{(tiedAnimes, i) => (
+							<For each={tiedAnimes}>
+								{(anime, j) => (
+									<tr>
+										<td class="move">
+											<Show when={j() === 0}>
+												<button
+													onClick={() => {
+														move(i(), true);
+													}}
+												>
+													<svg viewBox="0 0 2 1">
+														<polygon fill="inherit" points="0,1 1,0 2,1" />
+													</svg>
+												</button>
+												<hr class="divider" />
+												<button
+													onClick={() => {
+														move(i(), false);
+													}}
+												>
+													<svg viewBox="0 0 2 1">
+														<polygon fill="inherit" points="0,0 1,1 2,0" />
+													</svg>
+												</button>
+											</Show>
+										</td>
+										<td class="merge">
+											<Show when={tiedAnimes.length === 1 && i() > 0}>
+												<button onClick={() => merge(i())}>
+													<img src={iconMerge} alt="Merge" />
+												</button>
+											</Show>
+										</td>
+										<td class="rank">
+											{/* <div class="rank-content"> */}
+											<Show when={j() > 0} fallback={<p class="mono">{i() + 1}</p>}>
+												<button onClick={() => split(i(), j())}>
+													<img src={iconSplit} alt="Split" />
+												</button>
+											</Show>
+											{/* </div> */}
+										</td>
+										<td class="score">
+											<p class="mono">{calcScore(i())}</p>
+										</td>
+										<td class="title">
+											<p>{anime.media.title.romaji}</p>
+										</td>
+									</tr>
+								)}
+							</For>
 						)}
 					</For>
 				</tbody>
