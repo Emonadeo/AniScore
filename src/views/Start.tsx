@@ -11,7 +11,7 @@ import {
 } from 'solid-js';
 import { createGame, Game } from 'src/game';
 import { Anime } from 'src/util/anime';
-import { parseToken, Token } from 'src/util/token';
+import { Token } from 'src/util/token';
 import { ListQuery, ListQueryVariables } from 'src/generated/graphql';
 import { Spinner } from 'src/components/Spinner';
 

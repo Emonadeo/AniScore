@@ -11,6 +11,12 @@
 				"useTabs": false,
 				"tabWidth": 2
 			}
+		},
+		{
+			"files": ["*.svg"],
+			"options": {
+				"parser": "html"
+			}
 		}
 	]
 }

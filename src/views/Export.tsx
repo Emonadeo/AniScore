@@ -1,6 +1,6 @@
 import './export.scss';
 
-import { Component, createSignal, For, Show } from 'solid-js';
+import { Component, createSignal, For, Setter, Show } from 'solid-js';
 import { Spinner } from 'src/components/Spinner';
 import { ExportMutationVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';
@@ -8,6 +8,7 @@ import { Token } from 'src/util/token';
 
 interface Props {
 	output: Anime[];
+	setOutput: Setter<Anime[]>; // Setter needed for moving list items
 	token: Token;
 	onClear: () => void;
 }
@@ -109,6 +110,16 @@ export const Export: Component<Props> = function (props) {
 		console.log('Export completed');
 	}
 
+	function move(index: number, up: boolean) {
+		if ((index === 0 && up) || (index === props.output.length - 1 && !up)) {
+			return;
+		}
+		const l = props.output.slice();
+		const [anime] = l.splice(index, 1);
+		l.splice(up ? index - 1 : index + 1, 0, anime);
+		props.setOutput(l);
+	}
+
 	return (
 		<div class="view-export">
 			<h1 class="rounded">This is your new List.</h1>
@@ -136,11 +147,12 @@ export const Export: Component<Props> = function (props) {
 			<table role="list" class="list">
 				<thead>
 					<tr>
-						<th>
-							<p class="type-title-sm">Score</p>
-						</th>
+						<th />
 						<th>
 							<p class="type-title-sm">Rank</p>
+						</th>
+						<th>
+							<p class="type-title-sm">Score</p>
 						</th>
 						<th>
 							<p class="type-title-sm">Title</p>
@@ -151,11 +163,32 @@ export const Export: Component<Props> = function (props) {
 					<For each={props.output}>
 						{(anime, i) => (
 							<tr>
-								<td class="score">
-									<p class="mono">{calcScore(i())}</p>
+								<td class="move">
+									<button
+										onClick={() => {
+											move(i(), true);
+										}}
+									>
+										<svg viewBox="0 0 2 1">
+											<polygon fill="inherit" points="0,1 1,0 2,1" />
+										</svg>
+									</button>
+									<hr class="divider" />
+									<button
+										onClick={() => {
+											move(i(), false);
+										}}
+									>
+										<svg viewBox="0 0 2 1">
+											<polygon fill="inherit" points="0,0 1,1 2,0" />
+										</svg>
+									</button>
 								</td>
 								<td class="rank">
 									<p class="mono">{i() + 1}</p>
+								</td>
+								<td class="score">
+									<p class="mono">{calcScore(i())}</p>
 								</td>
 								<td class="title">
 									<p>{anime.media.title.romaji}</p>

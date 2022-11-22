@@ -36,7 +36,7 @@ export const App: Component = function () {
 		<>
 			<Switch fallback={<Start />}>
 				<Match when={output() && token() && { o: output() as Anime[], t: token() as Token }} keyed>
-					{({ o, t }) => <Export token={t} output={o} onClear={onClear} />}
+					{({ o, t }) => <Export token={t} output={o} setOutput={setOutput} onClear={onClear} />}
 				</Match>
 				<Match when={game()} keyed>
 					{(game) => <Play game={game} onDone={onDone} onClear={onClear} />}
