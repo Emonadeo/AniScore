@@ -1,4 +1,4 @@
-import { Component, createEffect, createResource, ResourceFetcher, Show } from 'solid-js';
+import { Component, createResource, ResourceFetcher, Show } from 'solid-js';
 import { MediaFormat } from 'src/generated/graphql';
 import { Anime as IAnime } from 'src/util/anime';
 

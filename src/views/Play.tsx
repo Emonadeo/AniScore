@@ -1,6 +1,6 @@
 import './play.scss';
 
-import { Component, createEffect, onMount } from 'solid-js';
+import { Component, createEffect } from 'solid-js';
 import { Transition } from 'solid-transition-group';
 import { Anime as AnimeComponent } from 'src/components/Anime';
 import { Keybinds } from 'src/components/Keybinds';
@@ -33,20 +33,6 @@ export const Play: Component<Props> = function (props) {
 			props.game.setTree({ index: 0 }); // TODO: Remove
 			return;
 		}
-	});
-
-	// TODO: Remove DEBUG
-	onMount(() => {
-		const test = setInterval(() => {
-			// Generate random number between 0 and 2
-			const r = Math.trunc(Math.random() * 3);
-			// Randomly commit true, false or undefined
-			// commit(r === 0 ? undefined : r === 1);
-			commit(true);
-			if (props.game.list().flat().length === props.game.source().length) {
-				clearInterval(test);
-			}
-		}, 1);
 	});
 
 	function onClear() {

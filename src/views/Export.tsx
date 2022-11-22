@@ -1,6 +1,6 @@
 import './export.scss';
 
-import { Component, createSignal, For, Match, Setter, Show, Switch } from 'solid-js';
+import { Component, createSignal, For, Setter, Show } from 'solid-js';
 import { Spinner } from 'src/components/Spinner';
 import { ExportMutationVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';

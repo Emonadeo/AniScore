@@ -9,11 +9,11 @@ import {
 	Setter,
 	Switch,
 } from 'solid-js';
+import { Spinner } from 'src/components/Spinner';
 import { createGame, Game } from 'src/game';
+import { ListQuery, ListQueryVariables } from 'src/generated/graphql';
 import { Anime } from 'src/util/anime';
 import { Token } from 'src/util/token';
-import { ListQuery, ListQueryVariables } from 'src/generated/graphql';
-import { Spinner } from 'src/components/Spinner';
 
 const clientId = '10128';
 
